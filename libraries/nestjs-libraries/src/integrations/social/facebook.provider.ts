@@ -32,7 +32,6 @@ export class FacebookProvider extends SocialAbstract implements SocialProvider {
   isBetweenSteps = true;
   scopes = [
     'pages_show_list',
-    'business_management',
     'pages_manage_posts',
     'pages_manage_engagement',
     'pages_read_engagement',
