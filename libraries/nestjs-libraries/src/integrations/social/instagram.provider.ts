@@ -32,14 +32,13 @@ export class InstagramProvider
   isBetweenSteps = true;
   toolTip = 'Instagram must be business and connected to a Facebook page';
   scopes = [
-    'instagram_business_basic',
+    'instagram_basic',
     'pages_show_list',
     'pages_read_engagement',
     'business_management',
-    'instagram_business_content_publish',
-    'instagram_business_manage_comments',
-    'instagram_business_manage_insights',
-    'instagram_business_manage_messages',
+    'instagram_content_publish',
+    'instagram_manage_comments',
+    'instagram_manage_insights',
   ];
   override maxConcurrentJob = 400;
   editor = 'normal' as const;
@@ -424,6 +423,10 @@ export class InstagramProvider
           `${process.env.FRONTEND_URL}/integrations/social/instagram`
         )}` +
         `&state=${state}` +
+        `&display=page` +
+        `&extras=${encodeURIComponent(
+          JSON.stringify({ setup: { channel: 'IG_API_ONBOARDING' } })
+        )}` +
         `&scope=${encodeURIComponent(this.scopes.join(','))}`,
       codeVerifier: makeId(10),
       state,
