@@ -130,7 +130,7 @@ export class ThreadsProvider extends SocialAbstract implements SocialProvider {
   }) {
     const getAccessToken = await (
       await this.fetch(
-        'https://graph.threads.net/oauth/access_token' +
+        'https://graph.threads.com/oauth/access_token' +
           `?client_id=${process.env.THREADS_APP_ID}` +
           `&redirect_uri=${encodeURIComponent(
             `${
@@ -141,7 +141,7 @@ export class ThreadsProvider extends SocialAbstract implements SocialProvider {
           )}` +
           `&grant_type=authorization_code` +
           `&client_secret=${process.env.THREADS_APP_SECRET}` +
-          `&code=${params.code}`
+          `&code=${encodeURIComponent(params.code)}`
       )
     ).json();
 
