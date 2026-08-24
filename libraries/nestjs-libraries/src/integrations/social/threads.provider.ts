@@ -128,6 +128,27 @@ export class ThreadsProvider extends SocialAbstract implements SocialProvider {
     codeVerifier: string;
     refresh?: string;
   }) {
+    // Temporary bootstrap path: Meta's /oauth/access_token exchange is
+    // rejecting valid credentials with a misleading "Invalid client_secret"
+    // for this app (verified: same client_id/secret work fine against Meta
+    // directly, and a token minted via Meta's own Threads Tester "User Token
+    // Generator" works against the live API). Until that's root-caused with
+    // Meta, if THREADS_BOOTSTRAP_TOKEN is set, use it directly instead of
+    // exchanging the auth code, so the channel can be connected.
+    if (process.env.THREADS_BOOTSTRAP_TOKEN) {
+      const bootstrapInfo = await this.fetchUserInfo(
+        process.env.THREADS_BOOTSTRAP_TOKEN
+      );
+      return {
+        id: bootstrapInfo.id,
+        name: bootstrapInfo.name,
+        accessToken: process.env.THREADS_BOOTSTRAP_TOKEN,
+        refreshToken: process.env.THREADS_BOOTSTRAP_TOKEN,
+        expiresIn: dayjs().add(58, 'days').unix() - dayjs().unix(),
+        picture: bootstrapInfo.picture || '',
+        username: bootstrapInfo.username,
+      };
+    }
     const debugRedirectUri = `${
       process?.env.FRONTEND_URL?.indexOf('https') == -1
         ? `https://redirectmeto.com/${process?.env.FRONTEND_URL}`
