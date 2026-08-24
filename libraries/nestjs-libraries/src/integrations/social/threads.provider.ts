@@ -128,17 +128,26 @@ export class ThreadsProvider extends SocialAbstract implements SocialProvider {
     codeVerifier: string;
     refresh?: string;
   }) {
+    const debugRedirectUri = `${
+      process?.env.FRONTEND_URL?.indexOf('https') == -1
+        ? `https://redirectmeto.com/${process?.env.FRONTEND_URL}`
+        : `${process?.env.FRONTEND_URL}`
+    }/integrations/social/threads`;
+    console.log(
+      'THREADS_DEBUG token exchange:',
+      JSON.stringify({
+        client_id: process.env.THREADS_APP_ID,
+        redirect_uri: debugRedirectUri,
+        code: params.code,
+        codeLength: params.code?.length,
+        secretLength: process.env.THREADS_APP_SECRET?.length,
+      })
+    );
     const getAccessToken = await (
       await this.fetch(
         'https://graph.threads.com/oauth/access_token' +
           `?client_id=${process.env.THREADS_APP_ID}` +
-          `&redirect_uri=${encodeURIComponent(
-            `${
-              process?.env.FRONTEND_URL?.indexOf('https') == -1
-                ? `https://redirectmeto.com/${process?.env.FRONTEND_URL}`
-                : `${process?.env.FRONTEND_URL}`
-            }/integrations/social/threads`
-          )}` +
+          `&redirect_uri=${encodeURIComponent(debugRedirectUri)}` +
           `&grant_type=authorization_code` +
           `&client_secret=${process.env.THREADS_APP_SECRET}` +
           `&code=${encodeURIComponent(params.code)}`
